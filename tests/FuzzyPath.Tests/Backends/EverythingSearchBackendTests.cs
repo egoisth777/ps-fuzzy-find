@@ -153,4 +153,25 @@ public class EverythingSearchBackendTests
         await Assert.ThrowsAsync<TaskCanceledException>(
             () => _sut.QueryAsync("test", options, cts.Token));
     }
+
+    [Fact]
+    public async Task ES09_Query_WithIncludeFilesFalse_FiltersOutFiles()
+    {
+        // Arrange
+        SetupSuccessfulQuery(2);
+        _native.GetResultFullPathName(0u).Returns(@"C:\file.txt");
+        _native.GetResultFullPathName(1u).Returns(@"C:\folder");
+        _native.IsFolderResult(0u).Returns(false);
+        _native.IsFolderResult(1u).Returns(true);
+
+        var options = new SearchOptions(IncludeFiles: false);
+
+        // Act
+        var results = await _sut.QueryAsync("test", options);
+
+        // Assert
+        Assert.Single(results);
+        Assert.Equal(@"C:\folder", results[0].FullPath);
+        Assert.True(results[0].IsDirectory);
+    }
 }

@@ -6,7 +6,7 @@
     CompanyName = 'Community'
     Copyright = '(c) 2026 FuzzyPath Contributors. All rights reserved.'
     Description = 'Interactive fuzzy path completion for PowerShell using Everything search and fzf.'
-    PowerShellVersion = '7.0'
+    PowerShellVersion = '7.4'
     RequiredModules = @('PSReadLine')
     CmdletsToExport = @('Invoke-FuzzyPath', 'Enable-FuzzyPath', 'Test-FuzzyPathEnvironment')
     FunctionsToExport = @()

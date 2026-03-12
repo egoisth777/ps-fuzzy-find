@@ -33,7 +33,7 @@ public sealed class EverythingSearchBackend : ISearchBackend
         // All Everything SDK calls must happen on the same thread (thread-local storage)
         _native.SetSearch(searchQuery);
         _native.SetRequestFlags(EverythingInterop.EVERYTHING_REQUEST_FILE_NAME | EverythingInterop.EVERYTHING_REQUEST_PATH);
-        _native.SetMax((uint)options.MaxResults);
+        _native.SetMax((uint)Math.Max(0, options.MaxResults));
         _native.SetMatchPath(options.MatchPath);
 
         _native.Query(true);
@@ -47,12 +47,11 @@ public sealed class EverythingSearchBackend : ISearchBackend
             throw new InvalidOperationException($"Everything query failed with error code {errorCode}.");
 
         var numResults = _native.GetNumResults();
-        var results = new List<SearchResult>((int)Math.Min(numResults, (uint)options.MaxResults));
+        var results = new List<SearchResult>((int)Math.Min(numResults, (uint)Math.Max(0, options.MaxResults)));
 
         for (uint i = 0; i < numResults; i++)
         {
-            if (cancellationToken.IsCancellationRequested)
-                break;
+            cancellationToken.ThrowIfCancellationRequested();
 
             var fullPath = _native.GetResultFullPathName(i);
             var isFolder = _native.IsFolderResult(i);

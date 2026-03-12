@@ -9,6 +9,7 @@ public sealed class FileSystemSearchBackend : ISearchBackend
 
     public FileSystemSearchBackend(string baseDirectory)
     {
+        ArgumentNullException.ThrowIfNull(baseDirectory);
         _baseDirectory = baseDirectory;
     }
 
@@ -21,6 +22,9 @@ public sealed class FileSystemSearchBackend : ISearchBackend
     private IReadOnlyList<SearchResult> EnumerateEntries(
         string query, SearchOptions options, CancellationToken cancellationToken)
     {
+        if (options.MaxResults <= 0)
+            return Array.Empty<SearchResult>();
+
         if (!Directory.Exists(_baseDirectory))
             return Array.Empty<SearchResult>();
 

@@ -4,7 +4,7 @@ namespace FuzzyPath.Backends;
 
 internal sealed class EverythingNativeWrapper : IEverythingNative
 {
-    private const int BufferSize = 512;
+    private const int BufferSize = 4096;
 
     public uint SetSearch(string search) => EverythingInterop.Everything_SetSearchW(search);
     public void SetRequestFlags(uint flags) => EverythingInterop.Everything_SetRequestFlags(flags);

@@ -15,6 +15,11 @@
     </Reference>
   </ItemGroup>
   <PropertyGroup>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
+  <Target Name="CheckPSReadLine" BeforeTargets="ResolveAssemblyReferences">
+    <Warning Condition="!Exists('$(PSReadLinePath)\Microsoft.PowerShell.PSReadLine2.dll')"
+             Text="PSReadLine not found at '$(PSReadLinePath)'. Set PSReadLinePath property to override." />
+  </Target>
 </Project>
