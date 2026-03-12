@@ -1,5 +1,8 @@
+using System.Runtime.Versioning;
+
 namespace FuzzyPath.Console;
 
+[SupportedOSPlatform("windows")]
 internal sealed class ConsoleNativeWrapper : IConsoleNative
 {
     public IntPtr GetStdHandle(int nStdHandle) => ConsoleInterop.GetStdHandle(nStdHandle);

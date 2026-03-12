@@ -1,5 +1,8 @@
+using System.Runtime.Versioning;
+
 namespace FuzzyPath.Console;
 
+[SupportedOSPlatform("windows")]
 internal sealed class ConsoleModeGuard : IDisposable
 {
     private readonly IConsoleNative _native;

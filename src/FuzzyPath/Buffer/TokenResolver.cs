@@ -70,16 +70,9 @@ internal sealed class TokenResolver
 
     private static bool IsSkippedOperator(Token token)
     {
-        // Check for redirection operators
         if (token is RedirectionToken)
             return true;
 
-        foreach (var kind in SkippedOperators)
-        {
-            if (token.Kind == kind)
-                return true;
-        }
-
-        return false;
+        return Array.Exists(SkippedOperators, kind => token.Kind == kind);
     }
 }

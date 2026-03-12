@@ -28,6 +28,7 @@ jobs:
           } else {
             Install-Module -Name PSReadLine -Force -SkipPublisherCheck -Scope CurrentUser
             $mod = Get-Module PSReadLine -ListAvailable | Select-Object -First 1
+            if (-not $mod) { Write-Error "PSReadLine module not found after install"; exit 1 }
             echo "path=$($mod.ModuleBase)" >> $env:GITHUB_OUTPUT
           }
 

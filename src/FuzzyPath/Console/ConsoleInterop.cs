@@ -1,7 +1,9 @@
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace FuzzyPath.Console;
 
+[SupportedOSPlatform("windows")]
 internal static class ConsoleInterop
 {
     internal const int STD_INPUT_HANDLE = -10;

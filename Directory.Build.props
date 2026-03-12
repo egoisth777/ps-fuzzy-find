@@ -12,8 +12,10 @@
     <!-- Override via: dotnet build /p:PSReadLinePath=C:\path\to\PSReadLine\version -->
     <_PSReadLineUserBase Condition="Exists('$(USERPROFILE)\Documents\PowerShell\Modules\PSReadLine')">$(USERPROFILE)\Documents\PowerShell\Modules\PSReadLine</_PSReadLineUserBase>
     <_PSReadLinePSHomeBase Condition="Exists('$(PSHOME)\Modules\PSReadLine')">$(PSHOME)\Modules\PSReadLine</_PSReadLinePSHomeBase>
-    <PSReadLinePath Condition="'$(PSReadLinePath)' == '' And '$(_PSReadLineUserBase)' != '' And $([System.IO.Directory]::GetDirectories('$(_PSReadLineUserBase)').Length) &gt; 0">$([System.IO.Directory]::GetDirectories('$(_PSReadLineUserBase)')[0])</PSReadLinePath>
-    <PSReadLinePath Condition="'$(PSReadLinePath)' == '' And '$(_PSReadLinePSHomeBase)' != '' And $([System.IO.Directory]::GetDirectories('$(_PSReadLinePSHomeBase)').Length) &gt; 0">$([System.IO.Directory]::GetDirectories('$(_PSReadLinePSHomeBase)')[0])</PSReadLinePath>
+    <_PSReadLineUserDirCount Condition="'$(_PSReadLineUserBase)' != ''">$([System.IO.Directory]::GetDirectories('$(_PSReadLineUserBase)').Length)</_PSReadLineUserDirCount>
+    <PSReadLinePath Condition="'$(PSReadLinePath)' == '' And '$(_PSReadLineUserDirCount)' != '' And $(_PSReadLineUserDirCount) &gt; 0">$([System.IO.Directory]::GetDirectories('$(_PSReadLineUserBase)').GetValue($([MSBuild]::Subtract($(_PSReadLineUserDirCount), 1))))</PSReadLinePath>
+    <_PSReadLinePSHomeDirCount Condition="'$(PSReadLinePath)' == '' And '$(_PSReadLinePSHomeBase)' != ''">$([System.IO.Directory]::GetDirectories('$(_PSReadLinePSHomeBase)').Length)</_PSReadLinePSHomeDirCount>
+    <PSReadLinePath Condition="'$(PSReadLinePath)' == '' And '$(_PSReadLinePSHomeDirCount)' != '' And $(_PSReadLinePSHomeDirCount) &gt; 0">$([System.IO.Directory]::GetDirectories('$(_PSReadLinePSHomeBase)').GetValue($([MSBuild]::Subtract($(_PSReadLinePSHomeDirCount), 1))))</PSReadLinePath>
     <PSReadLinePath Condition="'$(PSReadLinePath)' == ''">$(PSHOME)\Modules\PSReadLine</PSReadLinePath>
   </PropertyGroup>
 </Project>
