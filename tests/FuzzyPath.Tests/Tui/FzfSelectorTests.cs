@@ -17,28 +17,31 @@ public class FzfSelectorTests
     }
 
     [Fact]
-    public void BuildArguments_NullQuery_NoQueryFlag()
+    public void BuildArgumentList_NullQuery_NoQueryFlag()
     {
-        var result = FzfSelector.BuildArguments(null);
+        var result = FzfSelector.BuildArgumentList(null);
 
-        Assert.Equal("--ansi --no-sort", result);
+        Assert.Equal(new[] { "--ansi", "--no-sort" }, result);
         Assert.DoesNotContain("--query", result);
     }
 
     [Fact]
-    public void BuildArguments_WithQuery_IncludesQueryFlag()
+    public void BuildArgumentList_WithQuery_IncludesQueryFlag()
     {
-        var result = FzfSelector.BuildArguments("test");
+        var result = FzfSelector.BuildArgumentList("test");
 
-        Assert.Contains("--query=\"test\"", result);
+        Assert.Contains("--query", result);
+        Assert.Contains("test", result);
+        Assert.Equal(4, result.Count);
     }
 
     [Fact]
-    public void BuildArguments_QueryWithQuotes_EscapesQuotes()
+    public void BuildArgumentList_QueryWithQuotes_PreservesQuotesLiterally()
     {
-        var result = FzfSelector.BuildArguments("hello \"world\"");
+        var result = FzfSelector.BuildArgumentList("hello \"world\"");
 
-        Assert.Contains("--query=\"hello \\\"world\\\"\"", result);
+        Assert.Contains("--query", result);
+        Assert.Contains("hello \"world\"", result);
     }
 
     [Trait("Category", "Integration")]

@@ -14,18 +14,17 @@ public sealed class FzfSelector : ITuiSelector
 
     public async Task<string?> SelectAsync(IEnumerable<string> candidates, string? initialQuery, CancellationToken cancellationToken = default)
     {
-        var args = BuildArguments(initialQuery);
-
         var psi = new ProcessStartInfo
         {
             FileName = _fzfPath,
-            Arguments = args,
             RedirectStandardInput = true,
             RedirectStandardOutput = true,
             RedirectStandardError = false, // fzf needs stderr for TUI rendering
             UseShellExecute = false,
             CreateNoWindow = false // fzf needs a console window
         };
+        foreach (var arg in BuildArgumentList(initialQuery))
+            psi.ArgumentList.Add(arg);
 
         Process process;
         try
@@ -85,14 +84,13 @@ public sealed class FzfSelector : ITuiSelector
         }
     }
 
-    internal static string BuildArguments(string? initialQuery)
+    internal static IReadOnlyList<string> BuildArgumentList(string? initialQuery)
     {
-        var args = "--ansi --no-sort";
+        var args = new List<string> { "--ansi", "--no-sort" };
         if (!string.IsNullOrEmpty(initialQuery))
         {
-            // Escape any double quotes in the query
-            var escaped = initialQuery.Replace("\"", "\\\"");
-            args += $" --query=\"{escaped}\"";
+            args.Add("--query");
+            args.Add(initialQuery);
         }
         return args;
     }

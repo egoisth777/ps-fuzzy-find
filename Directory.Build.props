@@ -9,10 +9,11 @@
     <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
   <PropertyGroup>
-    <!-- Override this property if PSReadLine is installed in a non-standard location -->
-    <!-- Override via: dotnet build /p:PSReadLinePath=C:\path\to\PSReadLine -->
-    <!-- Common locations: $HOME\Documents\PowerShell\Modules\PSReadLine\{version}, $PSHOME\Modules\PSReadLine -->
-    <PSReadLinePath Condition="'$(PSReadLinePath)' == '' And Exists('$(USERPROFILE)\Documents\PowerShell\Modules\PSReadLine')">$([System.IO.Directory]::GetDirectories('$(USERPROFILE)\Documents\PowerShell\Modules\PSReadLine')[0])</PSReadLinePath>
+    <!-- Override via: dotnet build /p:PSReadLinePath=C:\path\to\PSReadLine\version -->
+    <_PSReadLineUserBase Condition="Exists('$(USERPROFILE)\Documents\PowerShell\Modules\PSReadLine')">$(USERPROFILE)\Documents\PowerShell\Modules\PSReadLine</_PSReadLineUserBase>
+    <_PSReadLinePSHomeBase Condition="Exists('$(PSHOME)\Modules\PSReadLine')">$(PSHOME)\Modules\PSReadLine</_PSReadLinePSHomeBase>
+    <PSReadLinePath Condition="'$(PSReadLinePath)' == '' And '$(_PSReadLineUserBase)' != '' And $([System.IO.Directory]::GetDirectories('$(_PSReadLineUserBase)').Length) &gt; 0">$([System.IO.Directory]::GetDirectories('$(_PSReadLineUserBase)')[0])</PSReadLinePath>
+    <PSReadLinePath Condition="'$(PSReadLinePath)' == '' And '$(_PSReadLinePSHomeBase)' != '' And $([System.IO.Directory]::GetDirectories('$(_PSReadLinePSHomeBase)').Length) &gt; 0">$([System.IO.Directory]::GetDirectories('$(_PSReadLinePSHomeBase)')[0])</PSReadLinePath>
     <PSReadLinePath Condition="'$(PSReadLinePath)' == ''">$(PSHOME)\Modules\PSReadLine</PSReadLinePath>
   </PropertyGroup>
 </Project>

@@ -79,4 +79,49 @@ public class ConsoleModeGuardTests
         _native.Received(1).SetConsoleMode(_inputHandle, 0x1Fu);
         _native.Received(1).SetConsoleMode(_outputHandle, 0x3u);
     }
+
+    [Fact]
+    public void Dispose_InputInvalid_SkipsInputRestore_StillRestoresOutput()
+    {
+        // Arrange: input handle returns false for GetConsoleMode
+        _native.GetConsoleMode(_inputHandle, out Arg.Any<uint>())
+            .Returns(x => { x[1] = 0u; return false; });
+
+        var guard = new ConsoleModeGuard(_native);
+        guard.Dispose();
+
+        // Input should not be restored
+        _native.DidNotReceive().SetConsoleMode(_inputHandle, Arg.Any<uint>());
+        // Output should still be restored
+        _native.Received(1).SetConsoleMode(_outputHandle, 0x3u);
+        _native.Received(1).Write("\x1b[?1049l");
+    }
+
+    [Fact]
+    public void Dispose_OutputInvalid_SkipsOutputRestore_StillRestoresInput()
+    {
+        // Arrange: output handle returns false for GetConsoleMode
+        _native.GetConsoleMode(_outputHandle, out Arg.Any<uint>())
+            .Returns(x => { x[1] = 0u; return false; });
+
+        var guard = new ConsoleModeGuard(_native);
+        guard.Dispose();
+
+        // Input should still be restored
+        _native.Received(1).SetConsoleMode(_inputHandle, 0x1Fu);
+        // Output should not be restored, no alt-screen exit
+        _native.DidNotReceive().SetConsoleMode(_outputHandle, Arg.Any<uint>());
+        _native.DidNotReceive().Write("\x1b[?1049l");
+    }
+
+    [Fact]
+    public void Constructor_InputInvalid_DoesNotFlush()
+    {
+        _native.GetConsoleMode(_inputHandle, out Arg.Any<uint>())
+            .Returns(x => { x[1] = 0u; return false; });
+
+        _ = new ConsoleModeGuard(_native);
+
+        _native.DidNotReceive().FlushConsoleInputBuffer(_inputHandle);
+    }
 }
