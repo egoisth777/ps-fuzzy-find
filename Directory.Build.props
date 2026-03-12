@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <PublishReadyToRun>true</PublishReadyToRun>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- Override this property if PSReadLine is installed in a non-standard location -->
+    <PSReadLinePath Condition="'$(PSReadLinePath)' == ''">$(PSHOME)\Modules\PSReadLine</PSReadLinePath>
+  </PropertyGroup>
+</Project>

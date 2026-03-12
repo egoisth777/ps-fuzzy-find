@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../FuzzyPath/FuzzyPath.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="PowerShellStandard.Library" Version="5.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.PowerShell.PSReadLine2">
+      <HintPath>$(PSReadLinePath)\Microsoft.PowerShell.PSReadLine2.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+  <Target Name="CheckPSReadLine" BeforeTargets="ResolveAssemblyReferences">
+    <Warning Condition="!Exists('$(PSReadLinePath)\Microsoft.PowerShell.PSReadLine2.dll')"
+             Text="PSReadLine not found at '$(PSReadLinePath)'. Set PSReadLinePath property to override." />
+  </Target>
+</Project>
