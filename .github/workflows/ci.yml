@@ -18,11 +18,25 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Resolve PSReadLine path
+        id: psreadline
+        shell: pwsh
+        run: |
+          $mod = Get-Module PSReadLine -ListAvailable | Select-Object -First 1
+          if ($mod) {
+            echo "path=$($mod.ModuleBase)" >> $env:GITHUB_OUTPUT
+          } else {
+            Install-Module -Name PSReadLine -Force -SkipPublisherCheck -Scope CurrentUser
+            $mod = Get-Module PSReadLine -ListAvailable | Select-Object -First 1
+            if (-not $mod) { Write-Error "PSReadLine module not found after install"; exit 1 }
+            echo "path=$($mod.ModuleBase)" >> $env:GITHUB_OUTPUT
+          }
+
       - name: Restore dependencies
         run: dotnet restore FuzzyPath.slnx
 
       - name: Build
-        run: dotnet build FuzzyPath.slnx --no-restore --configuration Debug
+        run: dotnet build FuzzyPath.slnx --no-restore --configuration Debug /p:PSReadLinePath="${{ steps.psreadline.outputs.path }}"
 
       - name: Test (unit tests only)
         run: dotnet test FuzzyPath.slnx --no-build --configuration Debug --filter "Category!=Integration" --verbosity normal
