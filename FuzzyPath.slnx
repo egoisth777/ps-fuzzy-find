@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FuzzyPath.Module/FuzzyPath.Module.csproj" />
+    <Project Path="src/FuzzyPath/FuzzyPath.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FuzzyPath.Tests/FuzzyPath.Tests.csproj" />
+  </Folder>
+</Solution>

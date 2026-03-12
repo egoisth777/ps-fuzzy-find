@@ -1,0 +1,26 @@
+# Build outputs
+bin/
+obj/
+publish/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Agent config
+CLAUDE.md
+.claude/
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# NuGet
+*.nupkg
+packages/
+
+# Test results
+TestResults/
+coverage/
