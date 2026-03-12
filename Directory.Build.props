@@ -10,6 +10,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <!-- Override this property if PSReadLine is installed in a non-standard location -->
+    <!-- Override via: dotnet build /p:PSReadLinePath=C:\path\to\PSReadLine -->
+    <!-- Common locations: $HOME\Documents\PowerShell\Modules\PSReadLine\{version}, $PSHOME\Modules\PSReadLine -->
+    <PSReadLinePath Condition="'$(PSReadLinePath)' == '' And Exists('$(USERPROFILE)\Documents\PowerShell\Modules\PSReadLine')">$([System.IO.Directory]::GetDirectories('$(USERPROFILE)\Documents\PowerShell\Modules\PSReadLine')[0])</PSReadLinePath>
     <PSReadLinePath Condition="'$(PSReadLinePath)' == ''">$(PSHOME)\Modules\PSReadLine</PSReadLinePath>
   </PropertyGroup>
 </Project>
